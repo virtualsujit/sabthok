@@ -1,13 +1,16 @@
 "use client";
 
 import Link from "next/link";
+import Script from "next/script";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { apiFetch } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 
 type Mode = "login" | "register";
+
+const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -19,6 +22,55 @@ export default function LoginPage() {
   const [fullName, setFullName] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
+  const googleBtnRef = useRef<HTMLDivElement>(null);
+
+  const handleGoogleCallback = useCallback(
+    async (response: { credential: string }) => {
+      setError("");
+      setGoogleLoading(true);
+      try {
+        const data = await apiFetch<{
+          access: string;
+          refresh: string;
+          is_new_user: boolean;
+        }>("/auth/google/", {
+          method: "POST",
+          body: JSON.stringify({ id_token: response.credential }),
+        });
+        login(data.access, data.refresh);
+        router.push(data.is_new_user ? "/dashboard" : "/");
+      } catch (err) {
+        const message =
+          err instanceof Error ? err.message : "Google login failed.";
+        setError(message);
+      } finally {
+        setGoogleLoading(false);
+      }
+    },
+    [login, router]
+  );
+
+  const initGoogle = useCallback(() => {
+    if (!GOOGLE_CLIENT_ID || !window.google?.accounts) return;
+    window.google.accounts.id.initialize({
+      client_id: GOOGLE_CLIENT_ID,
+      callback: handleGoogleCallback,
+    });
+    if (googleBtnRef.current) {
+      window.google.accounts.id.renderButton(googleBtnRef.current, {
+        theme: "outline",
+        size: "large",
+        width: googleBtnRef.current.offsetWidth,
+        text: "continue_with",
+        shape: "pill",
+      });
+    }
+  }, [handleGoogleCallback]);
+
+  useEffect(() => {
+    if (window.google?.accounts) initGoogle();
+  }, [initGoogle]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,7 +106,15 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-[70vh] items-center justify-center px-4 py-16">
+    <>
+      {GOOGLE_CLIENT_ID && (
+        <Script
+          src="https://accounts.google.com/gsi/client"
+          strategy="afterInteractive"
+          onLoad={initGoogle}
+        />
+      )}
+      <div className="flex min-h-[70vh] items-center justify-center px-4 py-16">
       <div className="w-full max-w-md">
         {/* Header */}
         <div className="mb-8 text-center">
@@ -85,6 +145,29 @@ export default function LoginPage() {
             >
               {error}
             </div>
+          )}
+
+          {/* Google Sign-In */}
+          {GOOGLE_CLIENT_ID && (
+            <>
+              <div
+                ref={googleBtnRef}
+                className="flex items-center justify-center"
+              />
+              {googleLoading && (
+                <p className="text-center text-sm text-gray-500">
+                  Signing in with Google...
+                </p>
+              )}
+              <div className="relative my-5">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-gray-200" />
+                </div>
+                <div className="relative flex justify-center text-sm">
+                  <span className="bg-white px-3 text-gray-400">or</span>
+                </div>
+              </div>
+            </>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -198,5 +281,6 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+    </>
   );
 }

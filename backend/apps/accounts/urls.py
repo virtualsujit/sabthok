@@ -10,4 +10,5 @@ urlpatterns = [
     path("register/", views.EmailPasswordRegisterView.as_view(), name="email-register"),
     path("token/refresh/", TokenRefreshView.as_view(), name="token-refresh"),
     path("profile/", views.UserProfileView.as_view(), name="user-profile"),
+    path("google/", views.GoogleLoginView.as_view(), name="google-login"),
 ]
