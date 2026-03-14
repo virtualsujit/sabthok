@@ -52,23 +52,23 @@ export function Footer() {
             </h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/search?category_slug=electronics" className="hover:text-white transition-colors">
-                  Electronics
-                </Link>
-              </li>
-              <li>
-                <Link href="/search?category_slug=vehicles" className="hover:text-white transition-colors">
-                  Vehicles
-                </Link>
-              </li>
-              <li>
                 <Link href="/search?category_slug=real-estate" className="hover:text-white transition-colors">
                   Real Estate
                 </Link>
               </li>
               <li>
-                <Link href="/search?category_slug=fashion-clothing" className="hover:text-white transition-colors">
-                  Fashion
+                <Link href="/search?category_slug=automobiles" className="hover:text-white transition-colors">
+                  Automobiles
+                </Link>
+              </li>
+              <li>
+                <Link href="/search?category_slug=mobile-phones-accessories" className="hover:text-white transition-colors">
+                  Mobile Phones
+                </Link>
+              </li>
+              <li>
+                <Link href="/search?category_slug=electronics-tvs-more" className="hover:text-white transition-colors">
+                  Electronics
                 </Link>
               </li>
             </ul>

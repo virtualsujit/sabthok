@@ -173,50 +173,61 @@ export default function DashboardPage() {
               {myListings.map((listing) => (
                 <div
                   key={listing.id}
-                  className="card flex items-center gap-4 p-4"
+                  className="card p-4"
                 >
-                  <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg bg-gray-100">
-                    {listing.thumbnail && (
-                      <Image
-                        src={listing.thumbnail}
-                        alt={listing.title}
-                        fill
-                        className="object-cover"
-                        sizes="64px"
-                      />
-                    )}
+                  <div className="flex items-center gap-3">
+                    <div className="relative h-14 w-14 flex-shrink-0 overflow-hidden rounded-lg bg-gray-100 sm:h-16 sm:w-16">
+                      {listing.thumbnail && (
+                        <Image
+                          src={listing.thumbnail}
+                          alt={listing.title}
+                          fill
+                          className="object-cover"
+                          sizes="64px"
+                        />
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <Link
+                          href={`/listing/${listing.slug}`}
+                          className="truncate font-medium hover:text-blue-600"
+                        >
+                          {listing.title}
+                        </Link>
+                        <span
+                          className={`hidden shrink-0 rounded-full px-2 py-0.5 text-xs font-medium sm:inline-block ${STATUS_COLORS[listing.status] || ""}`}
+                        >
+                          {STATUS_LABELS[listing.status] || listing.status}
+                        </span>
+                      </div>
+                      <p className="text-sm text-gray-500">
+                        Rs. {Number(listing.price).toLocaleString("en-NP")} &middot;{" "}
+                        {listing.views_count} views
+                      </p>
+                    </div>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <Link
-                      href={`/listing/${listing.slug}`}
-                      className="font-medium hover:text-blue-600"
+                  <div className="mt-3 flex items-center justify-between">
+                    <span
+                      className={`rounded-full px-2 py-0.5 text-xs font-medium sm:hidden ${STATUS_COLORS[listing.status] || ""}`}
                     >
-                      {listing.title}
-                    </Link>
-                    <p className="text-sm text-gray-500">
-                      Rs. {Number(listing.price).toLocaleString("en-NP")} &middot;{" "}
-                      {listing.views_count} views
-                    </p>
-                  </div>
-                  <span
-                    className={`rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[listing.status] || ""}`}
-                  >
-                    {STATUS_LABELS[listing.status] || listing.status}
-                  </span>
-                  <div className="flex items-center gap-2">
-                    <Link
-                      href={`/listing/${listing.slug}/edit`}
-                      className="btn-secondary rounded-lg px-3 py-1.5 text-xs font-medium"
-                    >
-                      Edit
-                    </Link>
-                    <button
-                      onClick={() => handleDeleteListing(listing.slug, listing.title)}
-                      disabled={deletingSlug === listing.slug}
-                      className="rounded-lg border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-100 disabled:opacity-50"
-                    >
-                      {deletingSlug === listing.slug ? "Deleting..." : "Delete"}
-                    </button>
+                      {STATUS_LABELS[listing.status] || listing.status}
+                    </span>
+                    <div className="flex items-center gap-2 ml-auto">
+                      <Link
+                        href={`/listing/${listing.slug}/edit`}
+                        className="btn-secondary rounded-lg px-3 py-1.5 text-xs font-medium"
+                      >
+                        Edit
+                      </Link>
+                      <button
+                        onClick={() => handleDeleteListing(listing.slug, listing.title)}
+                        disabled={deletingSlug === listing.slug}
+                        className="rounded-lg border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-100 disabled:opacity-50"
+                      >
+                        {deletingSlug === listing.slug ? "..." : "Delete"}
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))}

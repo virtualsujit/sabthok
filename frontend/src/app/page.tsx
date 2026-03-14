@@ -77,8 +77,8 @@ export default async function HomePage() {
           <div className="absolute right-1/4 top-1/3 h-40 w-40 rounded-full bg-white/5" />
         </div>
 
-        <div className="relative mx-auto max-w-7xl px-4 pb-16 pt-20 text-center sm:pb-20 sm:pt-28">
-          <h1 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl">
+        <div className="relative mx-auto max-w-7xl px-4 pb-14 pt-16 text-center sm:pb-20 sm:pt-28">
+          <h1 className="text-3xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl">
             Buy & Sell{" "}
             <span className="relative">
               <span className="relative z-10">Anything</span>
@@ -151,7 +151,7 @@ export default async function HomePage() {
       <div className="mx-auto max-w-7xl px-4">
         {/* Category Grid */}
         <section className="-mt-8 relative z-10 mb-12 sm:-mt-10">
-          <div className="grid grid-cols-3 gap-3 md:grid-cols-4">
+          <div className="grid grid-cols-3 gap-2 sm:gap-3 md:grid-cols-4">
             {CATEGORIES.map((cat) => {
               const gradient =
                 CATEGORY_COLORS[cat.slug] || "from-gray-500 to-gray-600";
@@ -159,14 +159,14 @@ export default async function HomePage() {
                 <Link
                   key={cat.slug}
                   href={`/search?category_slug=${cat.slug}`}
-                  className="card-hover group flex items-center gap-3 px-4 py-4 sm:flex-col sm:gap-2 sm:px-5 sm:py-5 sm:text-center"
+                  className="card-hover group flex flex-col items-center gap-1.5 px-2 py-3 text-center sm:gap-2 sm:px-5 sm:py-5"
                 >
                   <div
-                    className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${gradient} text-xl text-white shadow-sm transition-transform group-hover:scale-110 sm:h-14 sm:w-14 sm:text-2xl`}
+                    className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${gradient} text-lg text-white shadow-sm transition-transform group-hover:scale-110 sm:h-14 sm:w-14 sm:text-2xl`}
                   >
                     {cat.icon || "📦"}
                   </div>
-                  <span className="text-xs font-semibold text-gray-900 sm:text-sm">
+                  <span className="text-[11px] font-semibold leading-tight text-gray-900 sm:text-sm">
                     {cat.name}
                   </span>
                 </Link>

@@ -353,7 +353,7 @@ export default async function ListingPage({ params }: Props) {
             <h2 className="mb-5 text-xl font-bold text-gray-900">
               Similar Listings
             </h2>
-            <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4">
               {listing.similar_listings.map((item: ListingSummary) => (
                 <Link
                   key={item.id}
