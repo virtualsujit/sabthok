@@ -42,8 +42,15 @@ export default function RootLayout({
     <html lang="en" className={inter.className}>
       <body className="flex min-h-screen flex-col bg-gray-50 text-gray-900 antialiased">
         <Providers>
+          {/* Skip to main content link for keyboard/screen reader users */}
+          <a
+            href="#main-content"
+            className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-brand-600 focus:px-4 focus:py-2 focus:text-white focus:shadow-lg"
+          >
+            Skip to main content
+          </a>
           <Header />
-          <main className="flex-1">{children}</main>
+          <main id="main-content" className="flex-1" role="main">{children}</main>
           <Footer />
         </Providers>
       </body>

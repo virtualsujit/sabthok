@@ -3,6 +3,8 @@ import sys
 from datetime import timedelta
 from pathlib import Path
 
+import sentry_sdk
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "")
@@ -197,3 +199,15 @@ LANGUAGE_CODE = "en-us"
 TIME_ZONE = "Asia/Kathmandu"
 USE_I18N = True
 USE_TZ = True
+
+# ── Sentry Error Tracking ───────────────────────────────────────────
+
+SENTRY_DSN = os.environ.get("SENTRY_DSN", "")
+if SENTRY_DSN:
+    sentry_sdk.init(
+        dsn=SENTRY_DSN,
+        traces_sample_rate=0.1,
+        profiles_sample_rate=0.1,
+        send_default_pii=False,
+        environment="production" if not DEBUG else "development",
+    )

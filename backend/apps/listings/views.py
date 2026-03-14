@@ -2,7 +2,7 @@ from django.contrib.postgres.search import SearchQuery, SearchRank
 from django.db import IntegrityError
 from django.db.models import BooleanField, Exists, F, OuterRef, Value
 from django_filters import rest_framework as filters
-from rest_framework import generics, permissions, serializers, status
+from rest_framework import generics, permissions, status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.response import Response
@@ -106,7 +106,10 @@ class ListingDetailView(generics.RetrieveAPIView):
     def get_queryset(self):
         qs = (
             Listing.objects.filter(status=Listing.Status.ACTIVE)
-            .select_related("category", "location", "seller")
+            .select_related(
+                "category", "category__parent", "category__parent__parent",
+                "location", "seller",
+            )
             .prefetch_related("images")
         )
         # Annotate is_watched to avoid N+1 in serializer
@@ -214,6 +217,24 @@ class SellerProfileView(generics.GenericAPIView):
 
 
 # ── Watchlist ────────────────────────────────────────────────────────
+
+
+class MyWatchlistView(generics.ListAPIView):
+    """Listings in the authenticated user's watchlist."""
+
+    serializer_class = ListingListSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return (
+            Listing.objects.filter(
+                watchers__user=self.request.user,
+                status=Listing.Status.ACTIVE,
+            )
+            .select_related("category", "location", "seller")
+            .prefetch_related("images")
+            .order_by("-watchers__created_at")
+        )
 
 
 @api_view(["POST", "DELETE"])

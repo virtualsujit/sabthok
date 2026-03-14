@@ -44,6 +44,7 @@ services:
       SECURE_SSL_REDIRECT: "False"
       DEFAULT_FROM_EMAIL: ${DEFAULT_FROM_EMAIL:-noreply@sabthok.com}
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+      SENTRY_DSN: ${SENTRY_DSN:-}
       SEED_DATA: ${SEED_DATA:-true}
     volumes:
       - media:/app/media

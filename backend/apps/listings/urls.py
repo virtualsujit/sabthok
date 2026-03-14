@@ -13,5 +13,6 @@ urlpatterns = [
     path("listings/<slug:slug>/edit/", views.ListingUpdateView.as_view(), name="listing-update"),
     path("listings/<slug:slug>/delete/", views.ListingDeleteView.as_view(), name="listing-delete"),
     path("listings/<uuid:listing_id>/watch/", views.toggle_watchlist, name="toggle-watchlist"),
+    path("listings/watchlist/", views.MyWatchlistView.as_view(), name="my-watchlist"),
     path("sellers/<uuid:seller_id>/", views.SellerProfileView.as_view(), name="seller-profile"),
 ]

@@ -216,7 +216,11 @@ class ListingCreateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Price cannot be negative.")
         return value
 
+    ALLOWED_IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp", ".heic", ".heif"}
+
     def validate_images(self, value):
+        import os
+
         from PIL import Image
 
         if len(value) > 10:
@@ -225,6 +229,12 @@ class ListingCreateSerializer(serializers.ModelSerializer):
             if img.size > 5 * 1024 * 1024:
                 raise serializers.ValidationError(
                     f"Image {img.name} exceeds 5MB limit."
+                )
+            # Validate file extension
+            ext = os.path.splitext(img.name)[1].lower()
+            if ext not in self.ALLOWED_IMAGE_EXTENSIONS:
+                raise serializers.ValidationError(
+                    f"{img.name}: Only JPG, PNG, WebP, and HEIC images are allowed."
                 )
             # Validate actual image content, not just MIME header
             try:

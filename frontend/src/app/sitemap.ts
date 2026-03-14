@@ -2,17 +2,38 @@ import type { MetadataRoute } from "next";
 
 import type { ListingSummary, PaginatedResponse } from "@/types/listing";
 
+const CATEGORIES = [
+  "real-estate",
+  "mobile-phones-accessories",
+  "automobiles",
+  "computers-peripherals",
+  "electronics-tvs-more",
+  "furnishings-appliances",
+  "apparels-accessories",
+  "business-industrial",
+  "jobs",
+  "services",
+  "sports-fitness",
+  "beauty-health",
+];
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://localhost";
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://sabthok.com.np";
   const apiBase = process.env.INTERNAL_API_URL || "http://backend:8000/api";
 
   const staticPages: MetadataRoute.Sitemap = [
     { url: baseUrl, lastModified: new Date(), changeFrequency: "daily", priority: 1 },
-    { url: `${baseUrl}/search`, lastModified: new Date(), changeFrequency: "daily", priority: 0.8 },
-    { url: `${baseUrl}/terms`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.3 },
-    { url: `${baseUrl}/privacy`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.3 },
-    { url: `${baseUrl}/safety-tips`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.3 },
+    { url: `${baseUrl}/search`, lastModified: new Date(), changeFrequency: "daily", priority: 0.9 },
+    { url: `${baseUrl}/terms`, changeFrequency: "yearly", priority: 0.2 },
+    { url: `${baseUrl}/privacy`, changeFrequency: "yearly", priority: 0.2 },
+    { url: `${baseUrl}/safety-tips`, changeFrequency: "yearly", priority: 0.2 },
   ];
+
+  const categoryPages: MetadataRoute.Sitemap = CATEGORIES.map((slug) => ({
+    url: `${baseUrl}/search?category_slug=${slug}`,
+    changeFrequency: "daily" as const,
+    priority: 0.8,
+  }));
 
   const listingPages: MetadataRoute.Sitemap = [];
 
@@ -45,5 +66,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Return whatever we have so far
   }
 
-  return [...staticPages, ...listingPages];
+  return [...staticPages, ...categoryPages, ...listingPages];
 }

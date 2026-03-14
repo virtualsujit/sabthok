@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export function Footer() {
   return (
-    <footer className="mt-16 border-t bg-gray-900 text-gray-300">
+    <footer className="mt-16 border-t bg-gray-900 text-gray-300" role="contentinfo" aria-label="Site footer">
       <div className="mx-auto max-w-7xl px-4 py-12">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {/* Brand */}

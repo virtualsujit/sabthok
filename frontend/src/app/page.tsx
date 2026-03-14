@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { apiFetch } from "@/lib/api";
+import { formatPrice, timeAgo } from "@/lib/format";
 import type { ListingSummary, PaginatedResponse } from "@/types/listing";
 
 // Revalidate every 5 minutes — classifieds don't need sub-minute freshness
@@ -33,19 +34,6 @@ async function getRecentListings(): Promise<ListingSummary[]> {
   } catch {
     return [];
   }
-}
-
-function timeAgo(dateStr: string): string {
-  const diff = Date.now() - new Date(dateStr).getTime();
-  const mins = Math.floor(diff / 60000);
-  if (mins < 1) return "Just now";
-  if (mins < 60) return `${mins}m ago`;
-  const hours = Math.floor(mins / 60);
-  if (hours < 24) return `${hours}h ago`;
-  const days = Math.floor(hours / 24);
-  if (days === 1) return "Yesterday";
-  if (days < 30) return `${days}d ago`;
-  return new Date(dateStr).toLocaleDateString("en-NP");
 }
 
 const CATEGORY_COLORS: Record<string, string> = {
@@ -267,7 +255,7 @@ export default async function HomePage() {
 
                 <div className="p-4">
                   <p className="text-lg font-bold text-brand-600">
-                    Rs. {Number(listing.price).toLocaleString("en-NP")}
+                    {formatPrice(listing.price)}
                   </p>
                   <h3 className="mt-1 truncate text-sm font-semibold text-gray-900">
                     {listing.title}

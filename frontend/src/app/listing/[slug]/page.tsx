@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import { ImageGallery } from "@/components/listing/image-gallery";
 import { SellerCard } from "@/components/listing/seller-card";
 import { apiFetch } from "@/lib/api";
+import { formatPrice, timeAgo } from "@/lib/format";
 import type { ListingDetail, ListingSummary } from "@/types/listing";
 
 interface Props {
@@ -58,13 +59,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-function formatPrice(price: string, priceType: string): string {
-  const formatted = Number(price).toLocaleString("en-NP");
-  return priceType === "negotiable"
-    ? `Rs. ${formatted}`
-    : `Rs. ${formatted}`;
-}
-
 function conditionLabel(condition: string): string {
   const map: Record<string, string> = {
     new: "Brand New",
@@ -81,15 +75,6 @@ function conditionColor(condition: string): string {
     used: "bg-gray-100 text-gray-700",
   };
   return map[condition] || "bg-gray-100 text-gray-700";
-}
-
-function timeAgo(dateStr: string): string {
-  const diff = Date.now() - new Date(dateStr).getTime();
-  const days = Math.floor(diff / 86400000);
-  if (days === 0) return "Today";
-  if (days === 1) return "Yesterday";
-  if (days < 30) return `${days} days ago`;
-  return new Date(dateStr).toLocaleDateString("en-NP");
 }
 
 function stripHtml(text: string): string {
@@ -221,7 +206,7 @@ export default async function ListingPage({ params }: Props) {
             {/* Price & Info Card */}
             <div className="card p-6">
               <p className="text-3xl font-extrabold text-brand-600">
-                {formatPrice(listing.price, listing.price_type)}
+                {formatPrice(listing.price)}
               </p>
               {listing.price_type === "negotiable" && (
                 <span className="badge-negotiable mt-2">Negotiable</span>
@@ -394,7 +379,7 @@ export default async function ListingPage({ params }: Props) {
                   </div>
                   <div className="p-3">
                     <p className="text-sm font-bold text-brand-600">
-                      Rs. {Number(item.price).toLocaleString("en-NP")}
+                      {formatPrice(item.price)}
                     </p>
                     <h3 className="mt-0.5 truncate text-sm font-medium text-gray-900">
                       {item.title}
