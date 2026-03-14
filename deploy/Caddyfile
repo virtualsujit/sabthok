@@ -1,0 +1,44 @@
+{$DOMAIN:localhost} {
+	# Serve uploaded media files directly
+	handle /media/* {
+		root * /srv
+		file_server
+	}
+
+	# Serve Django static files directly
+	handle /static/* {
+		root * /srv
+		file_server
+	}
+
+	# Proxy API and admin to Django backend
+	handle /api/* {
+		reverse_proxy backend:8000
+	}
+
+	handle /admin/* {
+		reverse_proxy backend:8000
+	}
+
+	# Everything else goes to Next.js frontend
+	handle {
+		reverse_proxy frontend:3000
+	}
+
+	# Compression
+	encode gzip zstd
+
+	# Security headers
+	header {
+		X-Content-Type-Options nosniff
+		X-Frame-Options DENY
+		Referrer-Policy strict-origin-when-cross-origin
+		-Server
+	}
+
+	# Logging
+	log {
+		output stdout
+		format console
+	}
+}
